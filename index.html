@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Informações do animal - substitua os campos</title>
+  <style>
+    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#111}
+    body{margin:0;padding:16px;background:#f6f8fb;display:flex;justify-content:center}
+    .card{width:100%;max-width:720px;background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(17,24,39,0.06);padding:20px}
+    .top{display:flex;gap:16px;align-items:center}
+    .photo{width:110px;height:110px;border-radius:10px;overflow:hidden;flex:0 0 110px;background:#e9eef7;display:flex;align-items:center;justify-content:center}
+    .photo img{width:100%;height:100%;object-fit:cover}
+    h1{font-size:20px;margin:0}
+    p.desc{margin:6px 0 0;color:#444}
+    .info{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .badge{background:#f2f7ff;border-radius:8px;padding:10px}
+    .actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 14px;border-radius:10px;text-decoration:none;font-weight:600}
+    .btn-call{background:#0b76ef;color:#fff}
+    .btn-whats{background:#25d366;color:#fff}
+    .btn-copy{background:#6c757d;color:#fff}
+    .small{font-size:13px;color:#666}
+    footer{margin-top:18px;font-size:13px;color:#666}
+    label{font-weight:600;font-size:13px}
+    .form-row{display:flex;gap:8px;margin-top:8px}
+    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:14px}
+    @media (max-width:520px){.info{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <section class="top">
+      <div class="photo">
+        <img src="https://placekitten.com/400/400" alt="Foto do animal" id="pet-photo">
+      </div>
+      <div style="flex:1">
+        <h1 id="pet-name">MAVIS</h1>
+	<p class="desc" id="pet-breed">Raça Indefinida • Pelos PRETOS LOGOS, com a BARRIGA PRATA ESCURA e OLHOS AMARELOS • <span id="pet-age"></span> • Porte médio</p>
+      </div>
+    </section>
+
+    <section class="info" aria-label="Informações">
+      <div class="badge">
+        <label>Microchip</label>
+        <div id="microchip">Não possuí chip</div>
+      </div>
+
+      <div class="badge">
+        <label>Vacinas</label>
+        <div id="vaccines"> Vacinas em dia</div>
+      </div>
+
+      <div class="badge">
+        <label>Comportamento</label>
+        <div id="behavior">Dócil com pessoas, não gosta ou se assusta com outros animais</div>
+      </div>
+
+      <div class="badge">
+        <label>Recompensa</label>
+        <div id="reward">R$150,00</div>
+      </div>
+    </section>
+
+    <section class="actions">
+      <a class="btn btn-call" id="call-btn" href="tel:+5546999823017">📞 Ligar agora</a>
+      <a class="btn btn-whats" id="wa-btn" href="https://wa.me/5546999823017?text=Olá%2C%20encontrei%20seu%20gato">💬 Enviar WhatsApp</a>
+      <button class="btn btn-copy" id="copy-btn">📋 Copiar contato</button>
+
+      <div style="margin-top:8px">
+        <label>Mensagem para quem encontrou</label>
+        <div class="small">Por favor, mantenha o animal em local seguro e entre em contato. Se puder, envie foto(s) e local aproximado.</div>
+      </div>
+
+      <form id="found-form" onsubmit="return handleForm(event)">
+        <div class="form-row">
+          <input type="text" id="finder-name" placeholder="Seu nome (opcional)" />
+          <input type="text" id="finder-phone" placeholder="Telefone/WhatsApp" />
+        </div>
+        <div style="margin-top:8px">
+          <textarea id="finder-msg" rows="3" placeholder="Local encontrado / Observações"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-whats" type="submit">📩 Enviar por e‑mail</button>
+<a class="btn btn-whats" href="#" onclick="sendWhatsWithLocation()">📍 Enviar localização pelo WhatsApp</a>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <strong>Instruções rápidas:</strong> Se não conseguir ligar, envie uma mensagem no WhatsApp com foto e local. Não ofereça medicamentos sem orientação. Obrigado por ajudar!<br>
+      <small style="display:block;margin-top:6px">Página criada para apenas para facilitar o contato</small>
+    </footer>
+  </main>
+
+  <script>
+    const CONFIG = {
+      phoneInternational: "+5546999823017",
+      plainPhone: "(46) 99982-3017",
+      ownerEmail: "bsidoly123@gmail.com",
+      petName: "MAVIS"
+    }
+
+    document.getElementById('pet-name').textContent = `${CONFIG.petName}`;
+    document.getElementById('call-btn').href = `tel:${CONFIG.phoneInternational}`;
+    document.getElementById('wa-btn').href = `https://wa.me/${CONFIG.phoneInternational.replace('+','')}?text=${encodeURIComponent('Olá, encontrei seu gato: '+CONFIG.petName)}`;
+
+    document.getElementById('copy-btn').addEventListener('click', ()=>{
+      const text = `${CONFIG.petName} — Contato: ${CONFIG.phoneInternational}`;
+      navigator.clipboard?.writeText(text).then(()=>alert('Contato copiado para a área de transferência'))
+      .catch(()=>alert('Não foi possível copiar automaticamente. Por favor copie manualmente: '+text))
+    })
+
+    function handleForm(e){
+      e.preventDefault();
+      const name = document.getElementById('finder-name').value || 'N/A';
+      const phone = document.getElementById('finder-phone').value || 'N/A';
+      const msg = document.getElementById('finder-msg').value || 'Sem observações';
+      const body = `Encontrei ${CONFIG.petName}%0A%0ANome: ${name}%0ATelefone: ${phone}%0AObservações: ${msg}%0A%0AID: ${CONFIG.petId}`;
+      const mailto = `mailto:${CONFIG.ownerEmail}?subject=${encodeURIComponent('Encontrei '+CONFIG.petName)}&body=${body}`;
+      window.location.href = mailto;
+      return false;
+    }
+
+    function copyLocation(){
+      const sample = 'https://maps.google.com/?q=[COLOQUE_AQUI_O_LAT_LON]';
+      navigator.clipboard?.writeText(sample).then(()=>alert('Link de localização copiado (editar com lat/lon reais)'))
+      .catch(()=>alert('Não foi possível copiar automaticamente. Copie manualmente: '+sample))
+    }
+
+function calcAge(){
+const birth = new Date('2025-04-21T00:00:00');
+const now = new Date();
+let diff = now - birth;
+if(diff < 0){ document.getElementById('pet-age').textContent = '0 meses'; return; }
+const days = diff / (1000*60*60*24);
+
+
+const months = Math.floor(days / 30.4375);
+const years = Math.floor(months / 12);
+const remMonths = months % 12;
+
+
+let txt = '';
+if(years > 0) txt += years + (years === 1 ? ' ano' : ' anos');
+if(remMonths > 0) txt += (txt ? ' e ' : '') + remMonths + (remMonths === 1 ? ' mês' : ' meses');
+if(!txt) txt = '0 meses';
+
+
+document.getElementById('pet-age').textContent = txt;
+}
+calcAge();
+
+
+
+// Tenta obter várias amostras e escolhe a melhor (menor accuracy)
+function getAccuratePosition({ desiredAccuracy = 30, maxTime = 10000, maxSamples = 6 } = {}) {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('Geolocation não suportado'));
+
+    const positions = [];
+    let watchId = null;
+    let finished = false;
+
+    const clear = () => {
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      finished = true;
+    };
+
+    // Se uma posição com accuracy <= desiredAccuracy chegar, retorna imediatamente.
+    const success = (pos) => {
+      positions.push(pos);
+      // pos.coords.accuracy = metros (ex: 15.3)
+      if (pos.coords && typeof pos.coords.accuracy === 'number' && pos.coords.accuracy <= desiredAccuracy) {
+        clear();
+        return resolve(pos);
+      }
+      if (positions.length >= maxSamples) {
+        // escolhe a posição com menor accuracy
+        clear();
+        const best = positions.reduce((a, b) => (a.coords.accuracy <= b.coords.accuracy ? a : b));
+        return resolve(best);
+      }
+    };
+
+    const fail = (err) => {
+      clear();
+      reject(err);
+    };
+
+    // Timeout: depois de maxTime ms retorna a melhor que tiver (ou erro se não houver)
+    const timer = setTimeout(() => {
+      if (finished) return;
+      if (positions.length === 0) {
+        clear();
+        return reject(new Error('Timeout: sem posições obtidas'));
+      }
+      clear();
+      const best = positions.reduce((a, b) => (a.coords.accuracy <= b.coords.accuracy ? a : b));
+      return resolve(best);
+    }, maxTime);
+
+    // Começa o watchPosition com alta precisão
+    try {
+      watchId = navigator.geolocation.watchPosition(success, fail, {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: maxTime
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      reject(e);
+    }
+  });
+}
+
+// Usa a função acima para abrir o WhatsApp com o link do Google Maps
+function sendWhatsWithLocation() {
+  // ajuste se quiser tolerância maior (em metros), tempo máximo e amostras máximas
+  getAccuratePosition({ desiredAccuracy: 25, maxTime: 12000, maxSamples: 8 })
+    .then(pos => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lon = pos.coords.longitude.toFixed(6);
+      const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
+      const message = `Encontrei seu gato. Minha localização:\n${mapLink}`;
+      const waURL = `https://wa.me/5546999823017?text=${encodeURIComponent(message)}`;
+      window.location.href = waURL; // abre WA
+    })
+    .catch(err => {
+      // fallback simples: informar ao usuário e permitir enviar sem coords
+      alert('Não foi possível obter localização precisa: ' + (err.message || err));
+      // opcional: abrir WA com mensagem sem link de mapa
+      const waURL = `https://wa.me/5546999823017?text=${encodeURIComponent('Encontrei seu gato. Não consegui pegar minha localização precisa no momento.')}`;
+      window.location.href = waURL;
+    });
+}
+
+
+  </script>
+</body>
+</html>
